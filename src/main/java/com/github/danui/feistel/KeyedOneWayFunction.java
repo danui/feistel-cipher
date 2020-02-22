@@ -2,6 +2,7 @@ package com.github.danui.feistel;
 
 import com.google.common.primitives.Bytes;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -15,6 +16,7 @@ public class KeyedOneWayFunction implements OneWayFunction {
     }
 
     @Override
+    @Nonnull
     public byte[] apply(final byte[] inputs) {
         final byte[] combined = Bytes.concat(inputs, key);
         return oneway.apply(combined);

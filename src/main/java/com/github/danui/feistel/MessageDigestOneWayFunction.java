@@ -1,5 +1,6 @@
 package com.github.danui.feistel;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
@@ -18,6 +19,7 @@ public class MessageDigestOneWayFunction implements OneWayFunction {
     }
 
     @Override
+    @Nonnull
     public byte[] apply(final byte[] inputs) {
         try {
             byte[] churnBytes = inputs;

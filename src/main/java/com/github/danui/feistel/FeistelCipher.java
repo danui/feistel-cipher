@@ -28,8 +28,8 @@ public class FeistelCipher {
         this.rootKey = rootKey;
         this.numStages = numStages;
         this.stages = new ArrayList<>();
-        final DigestGenerator gen = new DigestGenerator("SHA1", rootKey);
-        final OneWayFunction oneway = new MessageDigestOneWayFunction("SHA1", 4, blockSize / 2);
+        final DigestGenerator gen = new DigestGenerator("SHA1", rootKey); // TODO: Key expansion algo should be configurable.
+        final OneWayFunction oneway = new MessageDigestOneWayFunction("SHA1", 4, blockSize / 2); // TODO: This function should be an input.
         for (int i = 0; i < numStages; ++i) {
             final byte[] stageKey = new byte[rootKey.length];
             gen.nextBytes(stageKey);

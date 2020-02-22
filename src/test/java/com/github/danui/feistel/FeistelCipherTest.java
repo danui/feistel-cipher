@@ -8,9 +8,9 @@ import static com.github.danui.feistel.Helpers.verifySame;
 
 public class FeistelCipherTest {
 
-    private static final int BLOCK_SIZE = 128;
-    private static final byte[] KEY = prngBytes(512, 168L);
-    private static final int STAGE_COUNT = 4;
+    private static final int BLOCK_SIZE = 256;
+    private static final byte[] KEY = prngBytes(2048, 168L);
+    private static final int STAGE_COUNT = 8;
     private static final FeistelCipher CIPHER = new FeistelCipher(BLOCK_SIZE, KEY, STAGE_COUNT);
 
     @Test
@@ -31,6 +31,6 @@ public class FeistelCipherTest {
     public void ciphertextShouldBeDifferentFromInput() {
         final byte[] inputs = prngBytes(BLOCK_SIZE, 3L);
         final byte[] ciphertext = CIPHER.encrypt(inputs);
-        verifyDifferent(inputs, ciphertext, 0.99);
+        verifyDifferent(inputs, ciphertext, .98);
     }
 }

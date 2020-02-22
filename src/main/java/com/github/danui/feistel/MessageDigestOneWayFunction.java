@@ -1,8 +1,10 @@
 package com.github.danui.feistel;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 
+@ParametersAreNonnullByDefault
 public class MessageDigestOneWayFunction implements OneWayFunction {
 
     private final String algo;

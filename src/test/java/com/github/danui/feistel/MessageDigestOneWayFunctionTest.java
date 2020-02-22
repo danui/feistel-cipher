@@ -4,6 +4,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 import static com.github.danui.feistel.Helpers.prngBytes;
+import static com.github.danui.feistel.Helpers.verifySame;
 import static org.junit.Assert.assertEquals;
 
 public class MessageDigestOneWayFunctionTest {
@@ -21,9 +22,7 @@ public class MessageDigestOneWayFunctionTest {
         final byte[] inputs = prngBytes(800, 10L);
         final byte[] out1 = fn.apply(inputs);
         final byte[] out2 = fn.apply(inputs);
-        for (int i = 0; i < 32; ++i) {
-            assertEquals(out1[i], out2[i]);
-        }
+        verifySame(out1, out2);
     }
 
     @Test

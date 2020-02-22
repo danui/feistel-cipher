@@ -4,12 +4,20 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
+import static com.github.danui.feistel.FeistelUtils.xor;
 
 @ParametersAreNonnullByDefault
 public class FeistelCipher {
     private final int blockSize;
     private final byte[] rootKey;
     private final int numStages;
+    private final List<Function<SplitBytes, SplitBytes>> stages;
+    private final List<Function<SplitBytes, SplitBytes>> reversedStages;
 
     public FeistelCipher(final int blockSize, final byte[] rootKey, final int numStages) {
         Preconditions.checkArgument(blockSize >= 2, "block size must be at least 2");
@@ -19,18 +27,53 @@ public class FeistelCipher {
         this.blockSize = blockSize;
         this.rootKey = rootKey;
         this.numStages = numStages;
+        this.stages = new ArrayList<>();
+        final DigestGenerator gen = new DigestGenerator("SHA1", rootKey);
+        final OneWayFunction oneway = new MessageDigestOneWayFunction("SHA1", 4, blockSize / 2);
+        for (int i = 0; i < numStages; ++i) {
+            final byte[] stageKey = new byte[rootKey.length];
+            gen.nextBytes(stageKey);
+            final OneWayFunction keyedOneway = new KeyedOneWayFunction(oneway, stageKey);
+            stages.add(makeStage(keyedOneway));
+        }
+        this.reversedStages = new ArrayList<>(stages);
+        Collections.reverse(reversedStages);
     }
 
     @Nonnull
     public byte[] encrypt(final byte[] plaintext) {
-        Preconditions.checkArgument(plaintext.length == blockSize);
-        // TODO.
-        return plaintext;
+        return exec(plaintext, stages);
     }
 
     @Nonnull
     public byte[] decrypt(final byte[] ciphertext) {
-        Preconditions.checkArgument(ciphertext.length == blockSize);
-        return ciphertext;
+        return exec(ciphertext, reversedStages);
+    }
+
+    private byte[] exec(final byte[] input, final List<Function<SplitBytes, SplitBytes>> stageOrder) {
+        Preconditions.checkArgument(input.length == blockSize);
+        SplitBytes splitBytes = split(input);
+        for (final Function<SplitBytes, SplitBytes> stage : stageOrder) {
+            splitBytes = stage.apply(splitBytes);
+        }
+        splitBytes.swap();
+        return splitBytes.concat();
+    }
+
+    private SplitBytes split(final byte[] block) {
+        final int halfSize = blockSize / 2;
+        final byte[] left = new byte[halfSize];
+        final byte[] right = new byte[halfSize];
+        System.arraycopy(block, 0, left, 0, halfSize);
+        System.arraycopy(block, halfSize, right, 0, halfSize);
+        return new SplitBytes(left, right);
+    }
+
+    private Function<SplitBytes, SplitBytes> makeStage(final OneWayFunction oneway) {
+        return (input) -> {
+            final byte[] otp = oneway.apply(input.getRight());
+            final byte[] xorOutput = xor(input.getLeft(), otp);
+            return new SplitBytes(input.getRight(), xorOutput);
+        };
     }
 }

@@ -35,11 +35,11 @@ public class MessageDigestOneWayFunction implements OneWayFunction {
             }
             final byte[] digested = out.toByteArray();
             final byte[] result = new byte[outputLength];
-            zeroize(result);
+            FeistelUtils.zeroize(result);
             for (int i = 0; i < folds; ++i) {
                 int base = i * outputLength;
                 for (int j = 0; j < outputLength; ++j) {
-                    result[j] = xor(result[j], digested[base + j]);
+                    result[j] = FeistelUtils.xor(result[j], digested[base + j]);
                 }
             }
             return result;
@@ -48,13 +48,4 @@ public class MessageDigestOneWayFunction implements OneWayFunction {
         }
     }
 
-    private void zeroize(final byte[] bytes) {
-        for (int i = 0; i < bytes.length; ++i) {
-            bytes[i] = (byte) 0;
-        }
-    }
-
-    private byte xor(final byte x, final byte y) {
-        return (byte) (x ^ y);
-    }
 }

@@ -22,9 +22,15 @@ public class FeistelCipher {
     }
 
     @Nonnull
-    public byte[] encrypt(final byte[] inputs) {
-        Preconditions.checkArgument(inputs.length == blockSize);
+    public byte[] encrypt(final byte[] plaintext) {
+        Preconditions.checkArgument(plaintext.length == blockSize);
         // TODO.
-        return inputs;
+        return plaintext;
+    }
+
+    @Nonnull
+    public byte[] decrypt(final byte[] ciphertext) {
+        Preconditions.checkArgument(ciphertext.length == blockSize);
+        return ciphertext;
     }
 }

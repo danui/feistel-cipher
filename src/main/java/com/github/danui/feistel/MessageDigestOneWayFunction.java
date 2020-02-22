@@ -2,8 +2,9 @@ package com.github.danui.feistel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.ByteArrayOutputStream;
-import java.security.MessageDigest;
+
+import static com.github.danui.feistel.FeistelUtils.xor;
+import static com.github.danui.feistel.FeistelUtils.zeroize;
 
 @ParametersAreNonnullByDefault
 public class MessageDigestOneWayFunction implements OneWayFunction {
@@ -22,24 +23,14 @@ public class MessageDigestOneWayFunction implements OneWayFunction {
     @Nonnull
     public byte[] apply(final byte[] inputs) {
         try {
-            byte[] churnBytes = inputs;
-            final IntCounter counter = new IntCounter();
-            final MessageDigest md = MessageDigest.getInstance(algo);
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            while (out.size() < outputLength * folds) {
-                md.update(churnBytes);
-                md.update(counter.bytes());
-                churnBytes = md.digest();
-                out.write(churnBytes);
-                counter.increment();
-            }
-            final byte[] digested = out.toByteArray();
+            final DigestGenerator gen = new DigestGenerator(algo, inputs);
             final byte[] result = new byte[outputLength];
-            FeistelUtils.zeroize(result);
+            final byte[] fold = new byte[outputLength];
+            zeroize(result);
             for (int i = 0; i < folds; ++i) {
-                int base = i * outputLength;
+                gen.nextBytes(fold);
                 for (int j = 0; j < outputLength; ++j) {
-                    result[j] = FeistelUtils.xor(result[j], digested[base + j]);
+                    result[j] = xor(result[j], fold[j]);
                 }
             }
             return result;

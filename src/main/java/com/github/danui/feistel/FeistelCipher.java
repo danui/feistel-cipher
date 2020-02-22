@@ -14,8 +14,6 @@ import static com.github.danui.feistel.FeistelUtils.xor;
 @ParametersAreNonnullByDefault
 public class FeistelCipher {
     private final int blockSize;
-    private final byte[] rootKey;
-    private final int numStages;
     private final List<Function<SplitBytes, SplitBytes>> stages;
     private final List<Function<SplitBytes, SplitBytes>> reversedStages;
 
@@ -25,8 +23,6 @@ public class FeistelCipher {
         Preconditions.checkArgument(rootKey.length >= 1, "root key length must be at least 1");
         Preconditions.checkArgument(numStages >= 2, "number of stages should be at least 2");
         this.blockSize = blockSize;
-        this.rootKey = rootKey;
-        this.numStages = numStages;
         this.stages = new ArrayList<>();
         final DigestGenerator gen = new DigestGenerator("SHA1", rootKey); // TODO: Key expansion algo should be configurable.
         final OneWayFunction oneway = new MessageDigestOneWayFunction("SHA1", 4, blockSize / 2); // TODO: This function should be an input.

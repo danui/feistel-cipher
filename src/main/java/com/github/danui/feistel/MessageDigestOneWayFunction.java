@@ -7,14 +7,16 @@ public class MessageDigestOneWayFunction implements OneWayFunction {
 
     private final String algo;
     private final int folds;
+    private final int outputLength;
 
-    public MessageDigestOneWayFunction(final String algo, final int folds) {
+    public MessageDigestOneWayFunction(final String algo, final int folds, final int outputLength) {
         this.algo = algo;
         this.folds = folds;
+        this.outputLength = outputLength;
     }
 
     @Override
-    public byte[] apply(final byte[] inputs, final int outputLength) {
+    public byte[] apply(final byte[] inputs) {
         try {
             byte[] churnBytes = inputs;
             final IntCounter counter = new IntCounter();

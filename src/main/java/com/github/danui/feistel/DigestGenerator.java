@@ -5,11 +5,13 @@ import java.security.NoSuchAlgorithmException;
 
 class DigestGenerator {
 
+    private final int folds;
     private final MessageDigest md;
     private byte[] buf;
     private int idx;
 
-    DigestGenerator(final String algo, final byte[] seed) {
+    DigestGenerator(final String algo, final byte[] seed, int folds) {
+        this.folds = folds;
         try {
             this.md = MessageDigest.getInstance(algo);
         } catch (final NoSuchAlgorithmException e) {
@@ -25,6 +27,14 @@ class DigestGenerator {
     }
 
     private byte nextByte() {
+        byte b = 0;
+        for (int i = 0; i < folds; ++i) {
+            b = (byte) (b ^ nextRawByte());
+        }
+        return b;
+    }
+
+    private byte nextRawByte() {
         if (buf == null || idx == buf.length) {
             buf = md.digest();
             idx = buf.length / 2;

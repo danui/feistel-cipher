@@ -30,6 +30,6 @@ public class MessageDigestOneWayFunctionTest {
         final OneWayFunction fn = new MessageDigestOneWayFunction("SHA1", 100, 8);
         final byte[] inputs = prngBytes(100, 10L);
         final byte[] out = fn.apply(inputs);
-        assertEquals("c7378b93f8c1ebec", Hex.encodeHexString(out));
+        assertEquals("ef9809e010afa453", Hex.encodeHexString(out));
     }
 }

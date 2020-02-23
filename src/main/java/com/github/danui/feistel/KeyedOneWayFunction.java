@@ -16,6 +16,11 @@ public class KeyedOneWayFunction implements OneWayFunction {
     }
 
     @Override
+    public int outputSize() {
+        return oneway.outputSize();
+    }
+
+    @Override
     @Nonnull
     public byte[] apply(final byte[] inputs) {
         final byte[] combined = Bytes.concat(inputs, key);

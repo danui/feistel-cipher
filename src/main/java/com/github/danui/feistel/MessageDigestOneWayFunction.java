@@ -17,6 +17,11 @@ public class MessageDigestOneWayFunction implements OneWayFunction {
     }
 
     @Override
+    public int outputSize() {
+        return outputLength;
+    }
+
+    @Override
     @Nonnull
     public byte[] apply(final byte[] inputs) {
         try {

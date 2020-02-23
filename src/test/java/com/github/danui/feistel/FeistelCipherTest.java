@@ -10,8 +10,14 @@ public class FeistelCipherTest {
 
     private static final int BLOCK_SIZE = 256;
     private static final byte[] KEY = prngBytes(2048, 168L);
-    private static final int STAGE_COUNT = 8;
-    private static final FeistelCipher CIPHER = new FeistelCipher(BLOCK_SIZE, KEY, STAGE_COUNT);
+    private static final FeistelCipher CIPHER = new FeistelCipherBuilder()
+            .setKeygenAlgo("SHA-256")
+            .setKeygenFolds(888)
+            .setOnewayAlgo("SHA-256")
+            .setOnewayFolds(64)
+            .setNumStages(84)
+            .setBlockSize(BLOCK_SIZE)
+            .build(KEY);
 
     @Test
     public void encryptionShouldBeStable() {

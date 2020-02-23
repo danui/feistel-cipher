@@ -48,21 +48,12 @@ public class FeistelCipher {
 
     private byte[] exec(final byte[] input, final List<Function<SplitBytes, SplitBytes>> stageOrder) {
         Preconditions.checkArgument(input.length == blockSize);
-        SplitBytes splitBytes = split(input);
+        SplitBytes splitBytes = SplitBytes.split(input);
         for (final Function<SplitBytes, SplitBytes> stage : stageOrder) {
             splitBytes = stage.apply(splitBytes);
         }
         splitBytes.swap();
         return splitBytes.concat();
-    }
-
-    private SplitBytes split(final byte[] block) {
-        final int halfSize = blockSize / 2;
-        final byte[] left = new byte[halfSize];
-        final byte[] right = new byte[halfSize];
-        System.arraycopy(block, 0, left, 0, halfSize);
-        System.arraycopy(block, halfSize, right, 0, halfSize);
-        return new SplitBytes(left, right);
     }
 
     private Function<SplitBytes, SplitBytes> makeStage(final OneWayFunction oneway) {

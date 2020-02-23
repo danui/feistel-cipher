@@ -11,6 +11,15 @@ class SplitBytes {
         this.right = right;
     }
 
+    static SplitBytes split(final byte[] block) {
+        final int halfSize = block.length / 2;
+        final byte[] left = new byte[halfSize];
+        final byte[] right = new byte[halfSize];
+        System.arraycopy(block, 0, left, 0, halfSize);
+        System.arraycopy(block, halfSize, right, 0, halfSize);
+        return new SplitBytes(left, right);
+    }
+
     byte[] getLeft() {
         return left;
     }

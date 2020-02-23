@@ -24,7 +24,7 @@ public class FeistelCipher {
         Preconditions.checkArgument(numStages >= 2, "number of stages should be at least 2");
         this.blockSize = blockSize;
         this.stages = new ArrayList<>();
-        final DigestGenerator gen = new DigestGenerator("SHA1", rootKey, 8); // TODO: Key expansion algo should be configurable.
+        final ByteGenerator gen = new ByteGenerator("SHA1", rootKey, 8); // TODO: Key expansion algo should be configurable.
         final OneWayFunction oneway = new MessageDigestOneWayFunction("SHA1", 4, blockSize / 2); // TODO: This function should be an input.
         for (int i = 0; i < numStages; ++i) {
             final byte[] stageKey = new byte[rootKey.length];

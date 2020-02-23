@@ -3,14 +3,14 @@ package com.github.danui.feistel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-class DigestGenerator {
+class ByteGenerator {
 
     private final int folds;
     private final MessageDigest md;
     private byte[] buf;
     private int idx;
 
-    DigestGenerator(final String algo, final byte[] seed, int folds) {
+    ByteGenerator(final String algo, final byte[] seed, int folds) {
         this.folds = folds;
         try {
             this.md = MessageDigest.getInstance(algo);
